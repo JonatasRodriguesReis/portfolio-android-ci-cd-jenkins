@@ -17,16 +17,20 @@ pipeline {
         stage("Setup Android SDK") {
             steps {
                 sh '''
-                  mkdir -p $ANDROID_HOME/cmdline-tools
-                  cd $ANDROID_HOME
+                set -e
 
-                  if [ ! -d "cmdline-tools/latest" ]; then
+                mkdir -p $ANDROID_HOME/cmdline-tools
+                cd $ANDROID_HOME
+
+                if [ ! -d "cmdline-tools/latest/bin" ]; then
                     curl -o cmdline.zip https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
                     unzip cmdline.zip
-                    mv cmdline-tools cmdline-tools/latest
-                  fi
+                    mkdir -p cmdline-tools/latest
+                    mv cmdline-tools/* cmdline-tools/latest/
+                    rm -rf cmdline.zip
+                fi
 
-                  yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager \
+                yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager \
                     "platform-tools" \
                     "platforms;android-34" \
                     "build-tools;34.0.0"
