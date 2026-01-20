@@ -26,8 +26,9 @@ pipeline {
                     curl -o cmdline.zip https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
                     unzip -oq cmdline.zip
                     mkdir -p cmdline-tools/latest
-                    mv cmdline-tools/* cmdline-tools/latest/
-                    rm -rf cmdline.zip
+                    rsync -a --exclude=latest cmdline-tools/ cmdline-tools/latest/
+                    rm -rf cmdline-tools/bin cmdline-tools/lib
+                    rm -f cmdline.zip
                 fi
 
                 yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager \
