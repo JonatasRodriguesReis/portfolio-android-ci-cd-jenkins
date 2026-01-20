@@ -1,0 +1,73 @@
+# =========================
+# Android / Gradle
+# =========================
+*.apk
+*.aab
+*.ap_
+*.dex
+*.class
+
+# Build directories
+build/
+*/build/
+
+# Generated files
+bin/
+gen/
+out/
+
+# =========================
+# Gradle
+# =========================
+.gradle/
+gradle-app.setting
+!gradle-wrapper.jar
+
+# Local Gradle properties (paths, tokens, etc)
+local.properties
+
+# =========================
+# Android Studio / IntelliJ
+# =========================
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Android Studio captures
+captures/
+
+# Android Studio caches
+.externalNativeBuild/
+.cxx/
+
+# =========================
+# Logs
+# =========================
+*.log
+
+# =========================
+# OS files
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# Kotlin
+# =========================
+.kotlin/
+
+# =========================
+# NDK / CMake
+# =========================
+obj/
+
+# =========================
+# Firebase / Google services
+# =========================
+google-services.json
+
+# =========================
+# Keystore files
+# =========================
+*.keystore

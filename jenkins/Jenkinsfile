@@ -1,0 +1,66 @@
+pipeline {
+    agent any
+
+    environment {
+        ANDROID_HOME = "/opt/android-sdk"
+        GRADLE_OPTS = "-Dorg.gradle.daemon=false"
+    }
+
+    stages {
+
+        stage("Checkout") {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage("Setup Android SDK") {
+            steps {
+                sh '''
+                  mkdir -p $ANDROID_HOME/cmdline-tools
+                  cd $ANDROID_HOME
+
+                  if [ ! -d "cmdline-tools/latest" ]; then
+                    curl -o cmdline.zip https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+                    unzip cmdline.zip
+                    mv cmdline-tools cmdline-tools/latest
+                  fi
+
+                  yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager \
+                    "platform-tools" \
+                    "platforms;android-34" \
+                    "build-tools;34.0.0"
+                '''
+            }
+        }
+
+        stage("Build Release APK") {
+            steps {
+                dir("app/android-ci-app") {
+                    withCredentials([
+                        file(credentialsId: 'android-keystore', variable: 'KEYSTORE_FILE'),
+                        string(credentialsId: 'keystore-password', variable: 'KEYSTORE_PASSWORD'),
+                        string(credentialsId: 'key-alias', variable: 'KEY_ALIAS'),
+                        string(credentialsId: 'key-password', variable: 'KEY_PASSWORD')
+                    ]) {
+                        sh '''
+                        chmod +x ./gradlew
+                        ./gradlew clean assembleRelease \
+                            --no-daemon \
+                            --no-build-cache
+                        '''
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            archiveArtifacts artifacts: "app/build/outputs/apk/release/*.apk"
+        }
+        failure {
+            echo "❌ Build failed"
+        }
+    }
+}
