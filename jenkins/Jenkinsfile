@@ -60,6 +60,33 @@ pipeline {
         }
     }
 
+    stage("Distribute APK to Firebase") {
+        steps {
+            dir("app/android-ci-app") {
+                withCredentials([
+                    file(credentialsId: 'firebase-service-account', variable: 'FIREBASE_SA'),
+                    string(credentialsId: 'firebase-app-id', variable: 'FIREBASE_APP_ID')
+                ]) {
+                    sh '''
+                    set -e
+
+                    export GOOGLE_APPLICATION_CREDENTIALS=$FIREBASE_SA
+
+                    if ! command -v firebase >/dev/null; then
+                        curl -sL https://firebase.tools | bash
+                    fi
+
+                    firebase appdistribution:distribute \
+                        app/build/outputs/apk/release/app-release.apk \
+                        --app "$FIREBASE_APP_ID" \
+                        --groups "qa-team" \
+                        --release-notes "Build created by Jenkins CI automatically after build."
+                    '''
+                }
+            }
+        }
+    }
+
     post {
         success {
             archiveArtifacts artifacts: "app/android-ci-app/app/build/outputs/apk/release/*.apk"
