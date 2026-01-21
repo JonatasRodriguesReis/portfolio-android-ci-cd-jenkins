@@ -2,7 +2,9 @@ version: "3.8"
 
 services:
   jenkins:
-    image: jenkins/jenkins:lts-jdk17
+    build:
+      context: ./
+      dockerfile: Dockerfile
     container_name: jenkins-android
     user: root
     ports:
@@ -13,6 +15,13 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
       - JAVA_OPTS=-Djenkins.install.runSetupWizard=false
+    networks:
+      - observability
 
 volumes:
   jenkins_home:
+
+networks:
+  observability:
+    name: observability_network
+    driver: bridge
