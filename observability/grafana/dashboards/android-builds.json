@@ -81,6 +81,7 @@
         "y": 0
       },
       "id": 1,
+      "interval": "5s",
       "options": {
         "colorMode": "value",
         "graphMode": "none",
@@ -88,9 +89,7 @@
         "orientation": "auto",
         "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
+          "calcs": ["lastNotNull"],
           "fields": "",
           "values": false
         },
@@ -109,7 +108,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "builder",
-          "expr": "default_jenkins_builds_last_build_result",
+          "expr": "default_jenkins_builds_last_build_result{jenkins_job=\"android-ci-cd-pipeline\"}",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -153,35 +152,32 @@
         "y": 0
       },
       "id": 2,
+      "interval": "5s",
       "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
+        "minVizHeight": 75,
+        "minVizWidth": 75,
         "orientation": "auto",
-        "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
+          "calcs": ["lastNotNull"],
           "fields": "",
           "values": false
         },
-        "showPercentChange": false,
-        "textMode": "auto",
-        "wideLayout": true
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "sizing": "auto"
       },
       "pluginVersion": "12.3.1",
       "targets": [
         {
-          "editorMode": "builder",
-          "expr": "last_over_time(default_jenkins_builds_last_build_duration_milliseconds[2d])/1000",
+          "editorMode": "code",
+          "expr": "default_jenkins_builds_last_build_duration_milliseconds/1000",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
         }
       ],
       "title": "Last build duration ",
-      "type": "stat"
+      "type": "gauge"
     }
   ],
   "preload": false,
@@ -191,12 +187,12 @@
     "list": []
   },
   "time": {
-    "from": "now-2d",
+    "from": "now-5m",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",
   "title": "Android CI/CD Dashboard",
   "uid": "adkcvz2",
-  "version": 1
+  "version": 3
 }
